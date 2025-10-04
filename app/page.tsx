@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Shield, Zap, Database, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -138,61 +138,54 @@ export default function LandingPage() {
 
       {/* Benefits Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-gray-200 dark:border-gray-800">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-black dark:text-white mb-6">
-              Why Choose EmployeeHub?
-            </h2>
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <CheckCircle2 className="h-6 w-6 text-black dark:text-white flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-black dark:text-white mb-1">
-                    No Learning Curve
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Start managing employees immediately with our intuitive interface
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <CheckCircle2 className="h-6 w-6 text-black dark:text-white flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-black dark:text-white mb-1">
-                    Built for Speed
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Optimized performance ensures your data loads instantly
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <CheckCircle2 className="h-6 w-6 text-black dark:text-white flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-black dark:text-white mb-1">
-                    Modern Technology
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Built with Next.js, TypeScript, and MongoDB for reliability
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <CheckCircle2 className="h-6 w-6 text-black dark:text-white flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-black dark:text-white mb-1">
-                    Fully Responsive
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Access your employee data from any device, anywhere
-                  </p>
-                </div>
+        <div className="text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-black dark:text-white mb-12">
+            Why Choose EmployeeHub?
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="flex items-start space-x-3">
+              <CheckCircle2 className="h-6 w-6 text-black dark:text-white flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold text-black dark:text-white mb-1">
+                  No Learning Curve
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Start managing employees immediately with our intuitive interface
+                </p>
               </div>
             </div>
-          </div>
-          <div className="relative">
-            <div className="aspect-square rounded-lg border-2 border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
-              <Users className="h-32 w-32 text-gray-400 dark:text-gray-600" />
+            <div className="flex items-start space-x-3">
+              <CheckCircle2 className="h-6 w-6 text-black dark:text-white flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold text-black dark:text-white mb-1">
+                  Built for Speed
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Optimized performance ensures your data loads instantly
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <CheckCircle2 className="h-6 w-6 text-black dark:text-white flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold text-black dark:text-white mb-1">
+                  Modern Technology
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Built with Next.js, TypeScript, and MongoDB for reliability
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <CheckCircle2 className="h-6 w-6 text-black dark:text-white flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold text-black dark:text-white mb-1">
+                  Fully Responsive
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Access your employee data from any device, anywhere
+                </p>
+              </div>
             </div>
           </div>
         </div>

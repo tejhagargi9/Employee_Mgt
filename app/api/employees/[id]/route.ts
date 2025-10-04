@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '../../../lib/mongodb';
 import Employee from '../../../models/Employee';
-import { ApiResponse, IEmployee } from '../../../types';
+import { ApiResponse, IEmployee } from '@/app/types';
 import mongoose from 'mongoose';
 
 /**
@@ -10,13 +10,13 @@ import mongoose from 'mongoose';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+
   try {
     // Connect to MongoDB
     await connectDB();
-
-    const { id } = params;
 
     // Validate MongoDB ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -47,12 +47,12 @@ export async function GET(
     };
 
     return NextResponse.json(response, { status: 200 });
-  } catch (error: any) {
-    console.error(`GET /api/employees/${params.id} error:`, error);
+  } catch (error: unknown) {
+    console.error(`GET /api/employees/${id} error:`, error);
 
     const response: ApiResponse = {
       success: false,
-      error: error.message || 'Failed to fetch employee',
+      error: error instanceof Error ? error.message : 'Failed to fetch employee',
     };
 
     return NextResponse.json(response, { status: 500 });
@@ -66,13 +66,13 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+
   try {
     // Connect to MongoDB
     await connectDB();
-
-    const { id } = params;
 
     // Validate MongoDB ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -154,22 +154,22 @@ export async function PUT(
     };
 
     return NextResponse.json(response, { status: 200 });
-  } catch (error: any) {
-    console.error(`PUT /api/employees/${params.id} error:`, error);
+  } catch (error: unknown) {
+    console.error(`PUT /api/employees/${id} error:`, error);
 
     // Handle Mongoose validation errors
-    if (error.name === 'ValidationError') {
+    if (error instanceof Error && 'name' in error && error.name === 'ValidationError') {
       const response: ApiResponse = {
         success: false,
-        error: Object.values(error.errors)
-          .map((err: any) => err.message)
+        error: Object.values((error as unknown as { errors: Record<string, { message: string }> }).errors)
+          .map((err) => err.message)
           .join(', '),
       };
       return NextResponse.json(response, { status: 400 });
     }
 
     // Handle duplicate key error
-    if (error.code === 11000) {
+    if (error instanceof Error && 'code' in error && (error as unknown as { code: number }).code === 11000) {
       const response: ApiResponse = {
         success: false,
         error: 'Email is already taken by another employee',
@@ -179,7 +179,7 @@ export async function PUT(
 
     const response: ApiResponse = {
       success: false,
-      error: error.message || 'Failed to update employee',
+      error: error instanceof Error ? error.message : 'Failed to update employee',
     };
 
     return NextResponse.json(response, { status: 500 });
@@ -192,13 +192,13 @@ export async function PUT(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+
   try {
     // Connect to MongoDB
     await connectDB();
-
-    const { id } = params;
 
     // Validate MongoDB ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -229,12 +229,12 @@ export async function DELETE(
     };
 
     return NextResponse.json(response, { status: 200 });
-  } catch (error: any) {
-    console.error(`DELETE /api/employees/${params.id} error:`, error);
+  } catch (error: unknown) {
+    console.error(`DELETE /api/employees/${id} error:`, error);
 
     const response: ApiResponse = {
       success: false,
-      error: error.message || 'Failed to delete employee',
+      error: error instanceof Error ? error.message : 'Failed to delete employee',
     };
 
     return NextResponse.json(response, { status: 500 });

@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     const skip = parseInt(searchParams.get('skip') || '0');
 
     // Build query filter
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
 
     // Add search filter (case-insensitive regex search)
     if (search) {
@@ -64,12 +64,12 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(response, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('GET /api/employees error:', error);
 
     const response: ApiResponse = {
       success: false,
-      error: error.message || 'Failed to fetch employees',
+      error: error instanceof Error ? error.message : 'Failed to fetch employees',
     };
 
     return NextResponse.json(response, { status: 500 });
@@ -134,22 +134,22 @@ export async function POST(request: NextRequest) {
     };
 
     return NextResponse.json(response, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('POST /api/employees error:', error);
 
     // Handle Mongoose validation errors
-    if (error.name === 'ValidationError') {
+    if (error instanceof Error && 'name' in error && error.name === 'ValidationError') {
       const response: ApiResponse = {
         success: false,
-        error: Object.values(error.errors)
-          .map((err: any) => err.message)
+        error: Object.values((error as unknown as { errors: Record<string, { message: string }> }).errors)
+          .map((err) => err.message)
           .join(', '),
       };
       return NextResponse.json(response, { status: 400 });
     }
 
     // Handle duplicate key error
-    if (error.code === 11000) {
+    if (error instanceof Error && 'code' in error && (error as unknown as { code: number }).code === 11000) {
       const response: ApiResponse = {
         success: false,
         error: 'Employee with this email already exists',
@@ -159,7 +159,7 @@ export async function POST(request: NextRequest) {
 
     const response: ApiResponse = {
       success: false,
-      error: error.message || 'Failed to create employee',
+      error: error instanceof Error ? error.message : 'Failed to create employee',
     };
 
     return NextResponse.json(response, { status: 500 });

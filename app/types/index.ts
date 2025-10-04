@@ -6,7 +6,7 @@ export interface IEmployee {
     createdAt?: Date;
   }
   
-  export interface ApiResponse<T = any> {
+  export interface ApiResponse<T = unknown> {
     success: boolean;
     data?: T;
     message?: string;
