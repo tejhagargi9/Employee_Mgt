@@ -28,6 +28,32 @@ const EmployeeSchema = new Schema<IEmployee>(
       trim: true,
       minlength: [2, 'Position must be at least 2 characters'],
       maxlength: [100, 'Position must not exceed 100 characters'],
+    },
+    // Optional additional information
+    personalInfo: {
+      dateOfBirth: { type: String },
+      gender: { type: String, enum: ['male', 'female', 'other'] },
+      nationality: { type: String },
+    },
+    contacts: {
+      phone: { type: String },
+      emergencyContact: {
+        name: { type: String },
+        phone: { type: String },
+        relationship: { type: String },
+      },
+    },
+    salary: {
+      amount: { type: Number, min: 0 },
+      currency: { type: String, default: 'USD' },
+      frequency: { type: String, enum: ['monthly', 'yearly', 'hourly'], default: 'monthly' },
+    },
+    address: {
+      street: { type: String },
+      city: { type: String },
+      state: { type: String },
+      zipCode: { type: String },
+      country: { type: String },
     }
   },
   {

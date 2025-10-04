@@ -81,13 +81,13 @@ export async function PUT(
 
     // Parse request body
     const body: Partial<IEmployee> = await request.json();
-    const { name, email, position } = body;
+    const { name, email, position, personalInfo, contacts, salary, address } = body;
 
     // Validate that at least one field is provided
-    if (!name && !email && !position) {
+    if (!name && !email && !position && !personalInfo && !contacts && !salary && !address) {
       const response: ApiResponse = {
         success: false,
-        error: 'At least one field (name, email, or position) must be provided',
+        error: 'At least one field must be provided for update',
       };
       return NextResponse.json(response, { status: 400 });
     }
@@ -122,6 +122,10 @@ export async function PUT(
       updateData.email = email.trim().toLowerCase();
     }
     if (position) updateData.position = position.trim();
+    if (personalInfo !== undefined) updateData.personalInfo = personalInfo;
+    if (contacts !== undefined) updateData.contacts = contacts;
+    if (salary !== undefined) updateData.salary = salary;
+    if (address !== undefined) updateData.address = address;
 
     // Update employee and return updated document
     const employee = await Employee.findByIdAndUpdate(

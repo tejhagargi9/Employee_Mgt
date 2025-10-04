@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,8 @@ import { Search, Plus, ArrowLeft, LogOut, User } from 'lucide-react';
 import EmployeeTable from '@/components/EmployeeTable';
 import AddEmployeeModal from '@/components/AddEmployeeModal';
 import EditEmployeeModal from '@/components/EditEmployeeModal';
+import UpdateEmployeeModal from '@/components/UpdateEmployeeModal';
+import ViewProfileModal from '@/components/ViewProfileModal';
 import DeleteConfirmDialog from '@/components/DeleteConfirmDialog';
 import Toast from '@/components/Toast';
 import { IEmployee } from '@/app/types';
@@ -21,15 +23,27 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<IEmployee | null>(null);
+  const [updatingEmployee, setUpdatingEmployee] = useState<IEmployee | null>(null);
+  const [viewingEmployee, setViewingEmployee] = useState<IEmployee | null>(null);
   const [deletingEmployee, setDeletingEmployee] = useState<IEmployee | null>(null);
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
 
   // Toast state
-  const [toast, setToast] = useState<{
-    show: boolean;
-    message: string;
-    type: 'success' | 'error';
-  }>({ show: false, message: '', type: 'success' });
+   const [toast, setToast] = useState<{
+     show: boolean;
+     message: string;
+     type: 'success' | 'error';
+   }>({ show: false, message: '', type: 'success' });
+
+  // Filtered employees based on search query
+  const filteredEmployees = useMemo(() => {
+    if (!searchQuery) return employees;
+    return employees.filter(employee =>
+      employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.position.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [employees, searchQuery]);
 
   // Check authentication on mount
   useEffect(() => {
@@ -47,35 +61,34 @@ export default function DashboardPage() {
   }, [router]);
 
   /**
-    * Fetch employees from API
-    */
-   const fetchEmployees = useCallback(async (search: string = '') => {
-     try {
-       setLoading(true);
-       const url = search
-         ? `/api/employees?search=${encodeURIComponent(search)}`
-         : '/api/employees';
+     * Fetch employees from API
+     */
+    const fetchEmployees = useCallback(async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/employees');
+        const data = await response.json();
 
-       const response = await fetch(url);
-       const data = await response.json();
+        if (data.success) {
+          setEmployees(data.data.employees);
+          return data.data.employees;
+        } else {
+          showToast('Failed to fetch employees', 'error');
+          return [];
+        }
+      } catch (error) {
+        console.error('Error fetching employees:', error);
+        showToast('Error loading employees', 'error');
+        return [];
+      } finally {
+        setLoading(false);
+      }
+    }, []);
 
-       if (data.success) {
-         setEmployees(data.data.employees);
-       } else {
-         showToast('Failed to fetch employees', 'error');
-       }
-     } catch (error) {
-       console.error('Error fetching employees:', error);
-       showToast('Error loading employees', 'error');
-     } finally {
-       setLoading(false);
-     }
-   }, []);
-
-  // Fetch employees on mount and when search changes
-  useEffect(() => {
-    fetchEmployees(searchQuery);
-  }, [searchQuery, fetchEmployees]);
+  // Fetch employees on mount
+   useEffect(() => {
+     fetchEmployees();
+   }, [fetchEmployees]);
 
   /**
    * Handle search input with debouncing
@@ -99,6 +112,20 @@ export default function DashboardPage() {
   };
 
   /**
+   * Handle view profile
+   */
+  const handleViewProfile = (employee: IEmployee) => {
+    setViewingEmployee(employee);
+  };
+
+  /**
+   * Handle update details
+   */
+  const handleUpdateDetails = (employee: IEmployee) => {
+    setUpdatingEmployee(employee);
+  };
+
+  /**
    * Handle delete employee
    */
   const handleDeleteEmployee = (employee: IEmployee) => {
@@ -119,9 +146,9 @@ export default function DashboardPage() {
       const data = await response.json();
 
       if (data.success) {
-        showToast('Employee deleted successfully', 'success');
-        fetchEmployees(searchQuery); // Refresh list
-        setDeletingEmployee(null);
+         showToast('Employee deleted successfully', 'success');
+         fetchEmployees(); // Refresh list
+         setDeletingEmployee(null);
       } else {
         showToast(data.error || 'Failed to delete employee', 'error');
       }
@@ -152,7 +179,7 @@ export default function DashboardPage() {
    */
   const handleEmployeeCreated = () => {
     setShowAddModal(false);
-    fetchEmployees(searchQuery);
+    fetchEmployees();
     showToast('Employee added successfully', 'success');
   };
 
@@ -161,8 +188,23 @@ export default function DashboardPage() {
    */
   const handleEmployeeUpdated = () => {
     setEditingEmployee(null);
-    fetchEmployees(searchQuery);
+    fetchEmployees();
     showToast('Employee updated successfully', 'success');
+  };
+
+  /**
+   * Handle successful employee details update
+   */
+  const handleEmployeeDetailsUpdated = async () => {
+    const newEmployees = await fetchEmployees();
+    if (updatingEmployee) {
+      const updatedEmp = newEmployees.find((emp: IEmployee) => emp._id === updatingEmployee._id);
+      if (updatedEmp && viewingEmployee && viewingEmployee._id === updatingEmployee._id) {
+        setViewingEmployee(updatedEmp);
+      }
+    }
+    setUpdatingEmployee(null);
+    showToast('Employee details updated successfully', 'success');
   };
 
   return (
@@ -241,12 +283,14 @@ export default function DashboardPage() {
         </div>
 
         {/* Employee Table */}
-        <EmployeeTable
-          employees={employees}
-          loading={loading}
-          onEdit={handleEditEmployee}
-          onDelete={handleDeleteEmployee}
-        />
+         <EmployeeTable
+           employees={filteredEmployees}
+           loading={loading}
+           onEdit={handleEditEmployee}
+           onDelete={handleDeleteEmployee}
+           onViewProfile={handleViewProfile}
+           onUpdateDetails={handleUpdateDetails}
+         />
       </main>
 
       {/* Modals */}
@@ -263,6 +307,20 @@ export default function DashboardPage() {
         onClose={() => setEditingEmployee(null)}
         onSuccess={handleEmployeeUpdated}
         onError={(message) => showToast(message, 'error')}
+      />
+
+      <UpdateEmployeeModal
+        isOpen={!!updatingEmployee}
+        employee={updatingEmployee}
+        onClose={() => setUpdatingEmployee(null)}
+        onSuccess={handleEmployeeDetailsUpdated}
+        onError={(message) => showToast(message, 'error')}
+      />
+
+      <ViewProfileModal
+        isOpen={!!viewingEmployee}
+        employee={viewingEmployee}
+        onClose={() => setViewingEmployee(null)}
       />
 
       <DeleteConfirmDialog

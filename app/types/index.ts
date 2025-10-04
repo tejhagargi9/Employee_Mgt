@@ -13,6 +13,32 @@ export interface IUser {
     position: string;
     password?: string;
     createdAt?: Date;
+    // Optional additional information
+    personalInfo?: {
+      dateOfBirth?: string;
+      gender?: string;
+      nationality?: string;
+    };
+    contacts?: {
+      phone?: string;
+      emergencyContact?: {
+        name?: string;
+        phone?: string;
+        relationship?: string;
+      };
+    };
+    salary?: {
+      amount?: number;
+      currency?: string;
+      frequency?: 'monthly' | 'yearly' | 'hourly';
+    };
+    address?: {
+      street?: string;
+      city?: string;
+      state?: string;
+      zipCode?: string;
+      country?: string;
+    };
   }
   
   export interface ApiResponse<T = unknown> {

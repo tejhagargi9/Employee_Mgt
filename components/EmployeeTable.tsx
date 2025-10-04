@@ -3,7 +3,8 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit2, Trash2, Loader2, Users } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Edit2, Trash2, Loader2, Users, MoreVertical, User, Settings } from 'lucide-react';
 import { IEmployee } from '../app/types/index';
 
 interface EmployeeTableProps {
@@ -11,9 +12,16 @@ interface EmployeeTableProps {
   loading: boolean;
   onEdit: (employee: IEmployee) => void;
   onDelete: (employee: IEmployee) => void;
+  onViewProfile: (employee: IEmployee) => void;
+  onUpdateDetails: (employee: IEmployee) => void;
 }
 
-export default function EmployeeTable({ employees, loading, onEdit, onDelete }: EmployeeTableProps) {
+export default function EmployeeTable({ employees, loading, onEdit, onDelete, onViewProfile, onUpdateDetails }: EmployeeTableProps) {
+  // Check if employee has incomplete information
+  const isInfoIncomplete = (employee: IEmployee) => {
+    return !employee.personalInfo || !employee.contacts || !employee.salary || !employee.address;
+  };
+
   // Loading state
   if (loading) {
     return (
@@ -55,7 +63,7 @@ export default function EmployeeTable({ employees, loading, onEdit, onDelete }: 
               className="hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
             >
               <TableCell className="font-medium text-black dark:text-white">
-                {employee.name}
+                <span>{employee.name}</span>
               </TableCell>
               <TableCell className="text-gray-600 dark:text-gray-400">
                 {employee.email}
@@ -64,24 +72,38 @@ export default function EmployeeTable({ employees, loading, onEdit, onDelete }: 
                 {employee.position}
               </TableCell>
               <TableCell className="text-right">
-                <div className="flex justify-end space-x-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(employee)}
-                    className="text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
-                  >
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(employee)}
-                    className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 relative"
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                      {isInfoIncomplete(employee) && (
+                        <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" title="Incomplete information"></div>
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-white dark:bg-black border-gray-200 dark:border-gray-800">
+                    <DropdownMenuItem onClick={() => onViewProfile(employee)} className="text-black dark:text-white">
+                      <User className="h-4 w-4 mr-2" />
+                      View Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onUpdateDetails(employee)} className="text-black dark:text-white">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Update Details
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onEdit(employee)} className="text-black dark:text-white">
+                      <Edit2 className="h-4 w-4 mr-2" />
+                      Edit Basic Info
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onDelete(employee)} className="text-red-600 dark:text-red-400">
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}
