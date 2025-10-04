@@ -4,10 +4,9 @@ import Employee from '../../../models/Employee';
 import { ApiResponse, IEmployee } from '@/app/types';
 import mongoose from 'mongoose';
 
-/**
- * GET /api/employees/[id]
- * Fetch a single employee by ID
- */
+
+ //Fetch a single employee by ID
+ 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -59,11 +58,8 @@ export async function GET(
   }
 }
 
-/**
- * PUT /api/employees/[id]
- * Update an employee by ID
- * Body: { name?, email?, position? }
- */
+ //Update an employee by ID
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -186,10 +182,8 @@ export async function PUT(
   }
 }
 
-/**
- * DELETE /api/employees/[id]
- * Delete an employee by ID
- */
+ //Delete an employee by ID
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

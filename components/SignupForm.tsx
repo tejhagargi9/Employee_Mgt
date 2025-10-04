@@ -80,7 +80,7 @@ export default function SignupForm() {
           )}
           <div className="space-y-4">
             <div>
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name" className="block mb-2">Name</Label>
               <Input
                 id="name"
                 type="text"
@@ -92,7 +92,7 @@ export default function SignupForm() {
               )}
             </div>
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="block mb-2">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -104,7 +104,7 @@ export default function SignupForm() {
               )}
             </div>
             <div>
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="block mb-2">Password</Label>
               <Input
                 id="password"
                 type="password"

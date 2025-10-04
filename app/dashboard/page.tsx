@@ -175,7 +175,7 @@ export default function DashboardPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => window.location.href = '/'}
+                onClick={() => router.push('/')}
                 className="text-black dark:text-white"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -195,7 +195,7 @@ export default function DashboardPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => window.location.href = '/update-password'}
+                onClick={() => router.push('/update-password')}
                 className="border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
               >
                 Change Password

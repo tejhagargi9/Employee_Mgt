@@ -108,7 +108,7 @@ export default function UpdatePasswordForm() {
           )}
           <div className="space-y-4">
             <div>
-              <Label htmlFor="currentPassword">Current Password</Label>
+              <Label htmlFor="currentPassword" className="block mb-2">Current Password</Label>
               <Input
                 id="currentPassword"
                 type="password"
@@ -120,7 +120,7 @@ export default function UpdatePasswordForm() {
               )}
             </div>
             <div>
-              <Label htmlFor="newPassword">New Password</Label>
+              <Label htmlFor="newPassword" className="block mb-2">New Password</Label>
               <Input
                 id="newPassword"
                 type="password"
@@ -132,7 +132,7 @@ export default function UpdatePasswordForm() {
               )}
             </div>
             <div>
-              <Label htmlFor="confirmPassword">Confirm New Password</Label>
+              <Label htmlFor="confirmPassword" className="block mb-2">Confirm New Password</Label>
               <Input
                 id="confirmPassword"
                 type="password"

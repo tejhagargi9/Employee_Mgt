@@ -3,15 +3,6 @@ import connectDB from '../../lib/mongodb';
 import Employee from '../../models/Employee';
 import { ApiResponse, IEmployee } from '../../types/index';
 
-/**
- * GET /api/employees
- * Fetch all employees with optional search and filtering
- * Query params:
- * - search: string (searches in name, email, position)
- * - position: string (filters by exact position)
- * - limit: number (limits results)
- * - skip: number (pagination offset)
- */
 export async function GET(request: NextRequest) {
   try {
     // Connect to MongoDB
@@ -76,11 +67,8 @@ export async function GET(request: NextRequest) {
   }
 }
 
-/**
- * POST /api/employees
- * Create a new employee
- * Body: { name, email, position }
- */
+//create employee
+
 export async function POST(request: NextRequest) {
   try {
     // Connect to MongoDB
