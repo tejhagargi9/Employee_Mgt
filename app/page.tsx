@@ -15,17 +15,25 @@ export default function LandingPage() {
             <div className="flex items-center space-x-2">
               <Users className="h-8 w-8 text-black dark:text-white" />
               <span className="text-xl font-bold text-black dark:text-white">
-                EmployeeHub
+                EmployeeTrack
               </span>
             </div>
-            <Button
-              variant="outline"
-              className="border-black text-black hover:bg-black hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black"
-              onClick={() => window.location.href = '/dashboard'}
-            >
-              Get Started
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="border-black text-black hover:bg-black hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black"
+                onClick={() => window.location.href = '/login'}
+              >
+                Login
+              </Button>
+              <Button
+                className="bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                onClick={() => window.location.href = '/signup'}
+              >
+                Sign Up
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </nav>
@@ -45,18 +53,19 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              className="bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-              onClick={() => window.location.href = '/dashboard'}
+              variant="outline"
+              className="border-black text-black hover:bg-black hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black"
+              onClick={() => window.location.href = '/login'}
             >
-              Open Dashboard
-              <ArrowRight className="ml-2 h-5 w-5" />
+              Login
             </Button>
             <Button
               size="lg"
-              variant="outline"
-              className="border-black text-black hover:bg-black hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black"
+              className="bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+              onClick={() => window.location.href = '/signup'}
             >
-              Learn More
+              Get Started
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
         </div>
@@ -140,7 +149,7 @@ export default function LandingPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-gray-200 dark:border-gray-800">
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-black dark:text-white mb-12">
-            Why Choose EmployeeHub?
+            Why Choose EmployeeTrack?
           </h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <div className="flex items-start space-x-3">
@@ -198,14 +207,14 @@ export default function LandingPage() {
             Ready to Get Started?
           </h2>
           <p className="text-gray-300 dark:text-gray-700 text-lg mb-8 max-w-2xl mx-auto">
-            Join organizations using EmployeeHub to manage their workforce efficiently
+            Join organizations using EmployeeTrack to manage their workforce efficiently
           </p>
           <Button
             size="lg"
             className="bg-white text-black hover:bg-gray-200 dark:bg-black dark:text-white dark:hover:bg-gray-800"
-            onClick={() => window.location.href = '/dashboard'}
+            onClick={() => window.location.href = '/signup'}
           >
-            Open Dashboard Now
+            Get Started Now
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </div>
@@ -218,11 +227,11 @@ export default function LandingPage() {
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
               <Users className="h-6 w-6 text-black dark:text-white" />
               <span className="font-semibold text-black dark:text-white">
-                EmployeeHub
+                EmployeeTrack
               </span>
             </div>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              © 2025 EmployeeHub. Built with Next.js & MongoDB.
+              © 2025 EmployeeTrack. Built with Next.js & MongoDB.
             </p>
           </div>
         </div>

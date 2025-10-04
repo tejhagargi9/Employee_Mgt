@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Plus, ArrowLeft } from 'lucide-react';
+import { Search, Plus, ArrowLeft, LogOut, User } from 'lucide-react';
 import EmployeeTable from '@/components/EmployeeTable';
 import AddEmployeeModal from '@/components/AddEmployeeModal';
 import EditEmployeeModal from '@/components/EditEmployeeModal';
@@ -12,6 +13,8 @@ import Toast from '@/components/Toast';
 import { IEmployee } from '@/app/types';
 
 export default function DashboardPage() {
+  const router = useRouter();
+
   // State management
   const [employees, setEmployees] = useState<IEmployee[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,13 +22,29 @@ export default function DashboardPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<IEmployee | null>(null);
   const [deletingEmployee, setDeletingEmployee] = useState<IEmployee | null>(null);
-  
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+
   // Toast state
   const [toast, setToast] = useState<{
     show: boolean;
     message: string;
     type: 'success' | 'error';
   }>({ show: false, message: '', type: 'success' });
+
+  // Check authentication on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, [router]);
 
   /**
     * Fetch employees from API
@@ -113,11 +132,20 @@ export default function DashboardPage() {
   };
 
   /**
-   * Show toast notification
+   * Handle logout
    */
-  const showToast = (message: string, type: 'success' | 'error') => {
-    setToast({ show: true, message, type });
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    router.push('/');
   };
+
+  /**
+    * Show toast notification
+    */
+   const showToast = (message: string, type: 'success' | 'error') => {
+     setToast({ show: true, message, type });
+   };
 
   /**
    * Handle successful employee creation
@@ -151,11 +179,36 @@ export default function DashboardPage() {
                 className="text-black dark:text-white"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back
+                Home
               </Button>
               <h1 className="text-2xl font-bold text-black dark:text-white">
                 Employee Dashboard
               </h1>
+            </div>
+            <div className="flex items-center space-x-4">
+              {user && (
+                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                  <User className="h-4 w-4" />
+                  <span>Welcome, {user.name}</span>
+                </div>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.location.href = '/update-password'}
+                className="border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+              >
+                Change Password
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                className="border-red-300 text-red-700 hover:bg-red-50 dark:border-red-600 dark:text-red-400 dark:hover:bg-red-900"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
             </div>
           </div>
         </div>

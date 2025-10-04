@@ -28,7 +28,7 @@ const EmployeeSchema = new Schema<IEmployee>(
       trim: true,
       minlength: [2, 'Position must be at least 2 characters'],
       maxlength: [100, 'Position must not exceed 100 characters'],
-    },
+    }
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields
