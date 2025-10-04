@@ -1,102 +1,238 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Users, Shield, Zap, Database, ArrowRight, CheckCircle2 } from 'lucide-react';
+
+export default function LandingPage() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-white dark:bg-black">
+      {/* Navigation */}
+      <nav className="border-b border-gray-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-2">
+              <Users className="h-8 w-8 text-black dark:text-white" />
+              <span className="text-xl font-bold text-black dark:text-white">
+                EmployeeHub
+              </span>
+            </div>
+            <Button
+              variant="outline"
+              className="border-black text-black hover:bg-black hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black"
+              onClick={() => window.location.href = '/dashboard'}
+            >
+              Get Started
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
+        <div className="text-center">
+          <h1 className="text-4xl md:text-6xl font-bold text-black dark:text-white mb-6 tracking-tight">
+            Manage Your Team
+            <br />
+            <span className="text-gray-600 dark:text-gray-400">Effortlessly</span>
+          </h1>
+          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+            A modern, streamlined employee management system designed for efficiency.
+            Add, edit, search, and organize your workforce in one place.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              size="lg"
+              className="bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+              onClick={() => window.location.href = '/dashboard'}
+            >
+              Open Dashboard
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-black text-black hover:bg-black hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black"
+            >
+              Learn More
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-gray-200 dark:border-gray-800">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-black dark:text-white mb-4">
+            Everything You Need
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+            Powerful features to help you manage your employees efficiently
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Feature 1 */}
+          <Card className="border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-black hover:border-black dark:hover:border-white transition-colors">
+            <CardHeader>
+              <div className="w-12 h-12 rounded-lg bg-black dark:bg-white flex items-center justify-center mb-4">
+                <Users className="h-6 w-6 text-white dark:text-black" />
+              </div>
+              <CardTitle className="text-black dark:text-white">
+                Employee Management
+              </CardTitle>
+              <CardDescription className="text-gray-600 dark:text-gray-400">
+                Add, edit, and delete employee records with ease. Keep all information organized.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          {/* Feature 2 */}
+          <Card className="border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-black hover:border-black dark:hover:border-white transition-colors">
+            <CardHeader>
+              <div className="w-12 h-12 rounded-lg bg-black dark:bg-white flex items-center justify-center mb-4">
+                <Zap className="h-6 w-6 text-white dark:text-black" />
+              </div>
+              <CardTitle className="text-black dark:text-white">
+                Lightning Fast
+              </CardTitle>
+              <CardDescription className="text-gray-600 dark:text-gray-400">
+                Real-time search and instant updates. No waiting, no delays.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          {/* Feature 3 */}
+          <Card className="border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-black hover:border-black dark:hover:border-white transition-colors">
+            <CardHeader>
+              <div className="w-12 h-12 rounded-lg bg-black dark:bg-white flex items-center justify-center mb-4">
+                <Database className="h-6 w-6 text-white dark:text-black" />
+              </div>
+              <CardTitle className="text-black dark:text-white">
+                Secure Storage
+              </CardTitle>
+              <CardDescription className="text-gray-600 dark:text-gray-400">
+                Your data is safely stored with MongoDB. Reliable and scalable.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          {/* Feature 4 */}
+          <Card className="border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-black hover:border-black dark:hover:border-white transition-colors">
+            <CardHeader>
+              <div className="w-12 h-12 rounded-lg bg-black dark:bg-white flex items-center justify-center mb-4">
+                <Shield className="h-6 w-6 text-white dark:text-black" />
+              </div>
+              <CardTitle className="text-black dark:text-white">
+                Simple & Clean
+              </CardTitle>
+              <CardDescription className="text-gray-600 dark:text-gray-400">
+                Intuitive interface that anyone can use. No training required.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-gray-200 dark:border-gray-800">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold text-black dark:text-white mb-6">
+              Why Choose EmployeeHub?
+            </h2>
+            <div className="space-y-4">
+              <div className="flex items-start space-x-3">
+                <CheckCircle2 className="h-6 w-6 text-black dark:text-white flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-black dark:text-white mb-1">
+                    No Learning Curve
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Start managing employees immediately with our intuitive interface
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <CheckCircle2 className="h-6 w-6 text-black dark:text-white flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-black dark:text-white mb-1">
+                    Built for Speed
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Optimized performance ensures your data loads instantly
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <CheckCircle2 className="h-6 w-6 text-black dark:text-white flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-black dark:text-white mb-1">
+                    Modern Technology
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Built with Next.js, TypeScript, and MongoDB for reliability
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <CheckCircle2 className="h-6 w-6 text-black dark:text-white flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-black dark:text-white mb-1">
+                    Fully Responsive
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Access your employee data from any device, anywhere
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="relative">
+            <div className="aspect-square rounded-lg border-2 border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+              <Users className="h-32 w-32 text-gray-400 dark:text-gray-600" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-gray-200 dark:border-gray-800">
+        <div className="bg-black dark:bg-white rounded-2xl p-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white dark:text-black mb-4">
+            Ready to Get Started?
+          </h2>
+          <p className="text-gray-300 dark:text-gray-700 text-lg mb-8 max-w-2xl mx-auto">
+            Join organizations using EmployeeHub to manage their workforce efficiently
+          </p>
+          <Button
+            size="lg"
+            className="bg-white text-black hover:bg-gray-200 dark:bg-black dark:text-white dark:hover:bg-gray-800"
+            onClick={() => window.location.href = '/dashboard'}
+          >
+            Open Dashboard Now
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-200 dark:border-gray-800 mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-2 mb-4 md:mb-0">
+              <Users className="h-6 w-6 text-black dark:text-white" />
+              <span className="font-semibold text-black dark:text-white">
+                EmployeeHub
+              </span>
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              © 2025 EmployeeHub. Built with Next.js & MongoDB.
+            </p>
+          </div>
+        </div>
       </footer>
     </div>
   );
