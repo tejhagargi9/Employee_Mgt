@@ -10,6 +10,39 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2 } from 'lucide-react';
 import { IEmployee } from '../app/types/index';
 
+// Dropdown options
+const NATIONALITIES = [
+  'American', 'British', 'Canadian', 'Indian', 'Australian', 'German', 'French', 'Chinese', 'Japanese', 'Korean', 'Brazilian', 'Mexican', 'Russian', 'Italian', 'Spanish', 'Dutch', 'Swedish', 'Norwegian', 'Danish', 'Finnish', 'Other'
+];
+
+const RELATIONSHIPS = [
+  'Spouse', 'Parent', 'Child', 'Sibling', 'Grandparent', 'Grandchild', 'Aunt', 'Uncle', 'Cousin', 'Friend', 'Colleague', 'Other'
+];
+
+const COUNTRIES = [
+  'United States', 'Canada', 'United Kingdom', 'India', 'Australia', 'Germany', 'France', 'China', 'Japan', 'South Korea', 'Brazil', 'Mexico', 'Russia', 'Italy', 'Spain', 'Netherlands', 'Sweden', 'Norway', 'Denmark', 'Finland', 'Other'
+];
+
+const STATES_BY_COUNTRY: Record<string, string[]> = {
+  'United States': [
+    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
+    'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland',
+    'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey',
+    'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
+    'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+  ],
+  'Canada': [
+    'Alberta', 'British Columbia', 'Manitoba', 'New Brunswick', 'Newfoundland and Labrador', 'Northwest Territories', 'Nova Scotia', 'Nunavut', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewan', 'Yukon'
+  ],
+  'India': [
+    'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
+    'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
+    'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Delhi', 'Jammu and Kashmir',
+    'Ladakh', 'Puducherry', 'Chandigarh', 'Andaman and Nicobar Islands', 'Dadra and Nagar Haveli and Daman and Diu', 'Lakshadweep'
+  ],
+  // Add more countries as needed
+};
+
 interface UpdateEmployeeModalProps {
   isOpen: boolean;
   employee: IEmployee | null;
@@ -109,6 +142,18 @@ export default function UpdateEmployeeModal({ isOpen, employee, onClose, onSucce
           };
           break;
         case 'contacts':
+          // Validate phone numbers
+          const phoneRegex = /^\+?[\d\s\-\(\)]+$/;
+          if (formData.contacts.phone && !phoneRegex.test(formData.contacts.phone)) {
+            setErrors({ phone: 'Please enter a valid phone number' });
+            setLoading(false);
+            return;
+          }
+          if (formData.contacts.emergencyContact.phone && !phoneRegex.test(formData.contacts.emergencyContact.phone)) {
+            setErrors({ emergencyPhone: 'Please enter a valid emergency contact phone number' });
+            setLoading(false);
+            return;
+          }
           updateData.contacts = {
             phone: formData.contacts.phone || undefined,
             emergencyContact: {
@@ -136,9 +181,13 @@ export default function UpdateEmployeeModal({ isOpen, employee, onClose, onSucce
           break;
       }
 
+      const token = localStorage.getItem('token');
       const response = await fetch(`/api/employees/${employee._id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify(updateData),
       });
 
@@ -217,17 +266,22 @@ export default function UpdateEmployeeModal({ isOpen, employee, onClose, onSucce
                 <Label htmlFor="nationality" className="text-black dark:text-white">
                   Nationality
                 </Label>
-                <Input
-                  id="nationality"
-                  type="text"
+                <Select
                   value={formData.personalInfo.nationality}
-                  onChange={(e) => setFormData({
+                  onValueChange={(value) => setFormData({
                     ...formData,
-                    personalInfo: { ...formData.personalInfo, nationality: e.target.value }
+                    personalInfo: { ...formData.personalInfo, nationality: value }
                   })}
-                  className="mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white"
-                  placeholder="e.g., American"
-                />
+                >
+                  <SelectTrigger className="mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white">
+                    <SelectValue placeholder="Select nationality" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white dark:bg-black border-gray-200 dark:border-gray-800">
+                    {NATIONALITIES.map((nat) => (
+                      <SelectItem key={nat} value={nat}>{nat}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </TabsContent>
@@ -246,9 +300,10 @@ export default function UpdateEmployeeModal({ isOpen, employee, onClose, onSucce
                     ...formData,
                     contacts: { ...formData.contacts, phone: e.target.value }
                   })}
-                  className="mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white"
+                  className={`mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white ${errors.phone ? 'border-red-500' : ''}`}
                   placeholder="+1 (555) 123-4567"
                 />
+                {errors.phone && <span className="text-red-500 text-sm mt-1">{errors.phone}</span>}
               </div>
               <div className="border-t pt-4">
                 <h4 className="text-sm font-medium text-black dark:text-white mb-3">Emergency Contact</h4>
@@ -287,28 +342,34 @@ export default function UpdateEmployeeModal({ isOpen, employee, onClose, onSucce
                           emergencyContact: { ...formData.contacts.emergencyContact, phone: e.target.value }
                         }
                       })}
-                      className="mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white"
+                      className={`mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white ${errors.emergencyPhone ? 'border-red-500' : ''}`}
                       placeholder="+1 (555) 987-6543"
                     />
+                    {errors.emergencyPhone && <span className="text-red-500 text-sm mt-1">{errors.emergencyPhone}</span>}
                   </div>
                   <div className="md:col-span-2">
                     <Label htmlFor="emergencyRelationship" className="text-black dark:text-white">
                       Relationship
                     </Label>
-                    <Input
-                      id="emergencyRelationship"
-                      type="text"
+                    <Select
                       value={formData.contacts.emergencyContact.relationship}
-                      onChange={(e) => setFormData({
+                      onValueChange={(value) => setFormData({
                         ...formData,
                         contacts: {
                           ...formData.contacts,
-                          emergencyContact: { ...formData.contacts.emergencyContact, relationship: e.target.value }
+                          emergencyContact: { ...formData.contacts.emergencyContact, relationship: value }
                         }
                       })}
-                      className="mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white"
-                      placeholder="Spouse, Parent, etc."
-                    />
+                    >
+                      <SelectTrigger className="mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white">
+                        <SelectValue placeholder="Select relationship" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-black border-gray-200 dark:border-gray-800">
+                        {RELATIONSHIPS.map((rel) => (
+                          <SelectItem key={rel} value={rel}>{rel}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
@@ -416,20 +477,49 @@ export default function UpdateEmployeeModal({ isOpen, employee, onClose, onSucce
                 />
               </div>
               <div>
+                <Label htmlFor="country" className="text-black dark:text-white">
+                  Country
+                </Label>
+                <Select
+                  value={formData.address.country}
+                  onValueChange={(value) => setFormData({
+                    ...formData,
+                    address: { ...formData.address, country: value, state: '' } // Reset state when country changes
+                  })}
+                >
+                  <SelectTrigger className="mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white">
+                    <SelectValue placeholder="Select country" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white dark:bg-black border-gray-200 dark:border-gray-800">
+                    {COUNTRIES.map((country) => (
+                      <SelectItem key={country} value={country}>{country}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
                 <Label htmlFor="state" className="text-black dark:text-white">
                   State/Province
                 </Label>
-                <Input
-                  id="state"
-                  type="text"
+                <Select
                   value={formData.address.state}
-                  onChange={(e) => setFormData({
+                  onValueChange={(value) => setFormData({
                     ...formData,
-                    address: { ...formData.address, state: e.target.value }
+                    address: { ...formData.address, state: value }
                   })}
-                  className="mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white"
-                  placeholder="NY"
-                />
+                  disabled={!formData.address.country || !STATES_BY_COUNTRY[formData.address.country]}
+                >
+                  <SelectTrigger className="mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white">
+                    <SelectValue placeholder="Select state/province" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white dark:bg-black border-gray-200 dark:border-gray-800">
+                    {formData.address.country && STATES_BY_COUNTRY[formData.address.country] &&
+                      STATES_BY_COUNTRY[formData.address.country].map((state) => (
+                        <SelectItem key={state} value={state}>{state}</SelectItem>
+                      ))
+                    }
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="zipCode" className="text-black dark:text-white">
@@ -445,22 +535,6 @@ export default function UpdateEmployeeModal({ isOpen, employee, onClose, onSucce
                   })}
                   className="mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white"
                   placeholder="10001"
-                />
-              </div>
-              <div>
-                <Label htmlFor="country" className="text-black dark:text-white">
-                  Country
-                </Label>
-                <Input
-                  id="country"
-                  type="text"
-                  value={formData.address.country}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    address: { ...formData.address, country: e.target.value }
-                  })}
-                  className="mt-1 border-gray-300 dark:border-gray-700 bg-white dark:bg-black text-black dark:text-white"
-                  placeholder="United States"
                 />
               </div>
             </div>

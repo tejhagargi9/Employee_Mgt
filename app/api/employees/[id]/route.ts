@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
 import connectDB from '../../../lib/mongodb';
 import Employee from '../../../models/Employee';
 import { ApiResponse, IEmployee } from '@/app/types';
@@ -17,6 +18,30 @@ export async function GET(
     // Connect to MongoDB
     await connectDB();
 
+    // Get user from token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      const response: ApiResponse = {
+        success: false,
+        error: 'Unauthorized',
+      };
+      return NextResponse.json(response, { status: 401 });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    } catch (error) {
+      const response: ApiResponse = {
+        success: false,
+        error: 'Invalid token',
+      };
+      return NextResponse.json(response, { status: 401 });
+    }
+
+    const userId = decoded.userId;
+
     // Validate MongoDB ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
       const response: ApiResponse = {
@@ -26,8 +51,8 @@ export async function GET(
       return NextResponse.json(response, { status: 400 });
     }
 
-    // Find employee by ID
-    const employee = await Employee.findById(id);
+    // Find employee by ID and userId
+    const employee = await Employee.findOne({ _id: id, userId: new mongoose.Types.ObjectId(userId) });
 
     // Check if employee exists
     if (!employee) {
@@ -69,6 +94,30 @@ export async function PUT(
   try {
     // Connect to MongoDB
     await connectDB();
+
+    // Get user from token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      const response: ApiResponse = {
+        success: false,
+        error: 'Unauthorized',
+      };
+      return NextResponse.json(response, { status: 401 });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    } catch (error) {
+      const response: ApiResponse = {
+        success: false,
+        error: 'Invalid token',
+      };
+      return NextResponse.json(response, { status: 401 });
+    }
+
+    const userId = decoded.userId;
 
     // Validate MongoDB ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -128,8 +177,8 @@ export async function PUT(
     if (address !== undefined) updateData.address = address;
 
     // Update employee and return updated document
-    const employee = await Employee.findByIdAndUpdate(
-      id,
+    const employee = await Employee.findOneAndUpdate(
+      { _id: id, userId: new mongoose.Types.ObjectId(userId) },
       updateData,
       {
         new: true, // Return updated document
@@ -198,6 +247,30 @@ export async function DELETE(
     // Connect to MongoDB
     await connectDB();
 
+    // Get user from token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      const response: ApiResponse = {
+        success: false,
+        error: 'Unauthorized',
+      };
+      return NextResponse.json(response, { status: 401 });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    } catch (error) {
+      const response: ApiResponse = {
+        success: false,
+        error: 'Invalid token',
+      };
+      return NextResponse.json(response, { status: 401 });
+    }
+
+    const userId = decoded.userId;
+
     // Validate MongoDB ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
       const response: ApiResponse = {
@@ -207,8 +280,8 @@ export async function DELETE(
       return NextResponse.json(response, { status: 400 });
     }
 
-    // Delete employee by ID
-    const employee = await Employee.findByIdAndDelete(id);
+    // Delete employee by ID and userId
+    const employee = await Employee.findOneAndDelete({ _id: id, userId: new mongoose.Types.ObjectId(userId) });
 
     // Check if employee exists
     if (!employee) {

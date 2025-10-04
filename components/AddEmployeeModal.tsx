@@ -65,9 +65,13 @@ export default function AddEmployeeModal({ isOpen, onClose, onSuccess, onError }
     setLoading(true);
 
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch('/api/employees', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify(formData),
       });
 

@@ -8,6 +8,7 @@ export interface IUser {
 
   export interface IEmployee {
     _id?: string;
+    userId?: string;
     name: string;
     email: string;
     position: string;

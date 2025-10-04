@@ -4,6 +4,11 @@ import { IEmployee } from '../types/index';
 // Define the Employee schema
 const EmployeeSchema = new Schema<IEmployee>(
   {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'User ID is required'],
+    },
     name: {
       type: String,
       required: [true, 'Name is required'],

@@ -66,7 +66,12 @@ export default function DashboardPage() {
     const fetchEmployees = useCallback(async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/employees');
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/employees', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
         const data = await response.json();
 
         if (data.success) {
@@ -139,8 +144,12 @@ export default function DashboardPage() {
     if (!deletingEmployee) return;
 
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`/api/employees/${deletingEmployee._id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
 
       const data = await response.json();
@@ -177,9 +186,9 @@ export default function DashboardPage() {
   /**
    * Handle successful employee creation
    */
-  const handleEmployeeCreated = () => {
+  const handleEmployeeCreated = async () => {
     setShowAddModal(false);
-    fetchEmployees();
+    await fetchEmployees();
     showToast('Employee added successfully', 'success');
   };
 

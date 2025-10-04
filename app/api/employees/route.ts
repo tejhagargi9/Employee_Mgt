@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import connectDB from '../../lib/mongodb';
 import Employee from '../../models/Employee';
 import { ApiResponse, IEmployee } from '../../types/index';
@@ -8,6 +10,30 @@ export async function GET(request: NextRequest) {
     // Connect to MongoDB
     await connectDB();
 
+    // Get user from token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      const response: ApiResponse = {
+        success: false,
+        error: 'Unauthorized',
+      };
+      return NextResponse.json(response, { status: 401 });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    } catch (error) {
+      const response: ApiResponse = {
+        success: false,
+        error: 'Invalid token',
+      };
+      return NextResponse.json(response, { status: 401 });
+    }
+
+    const userId = decoded.userId;
+
     // Extract query parameters
     const searchParams = request.nextUrl.searchParams;
     const search = searchParams.get('search') || '';
@@ -16,7 +42,9 @@ export async function GET(request: NextRequest) {
     const skip = parseInt(searchParams.get('skip') || '0');
 
     // Build query filter
-    const filter: Record<string, unknown> = {};
+    const filter: Record<string, unknown> = {
+      userId: new mongoose.Types.ObjectId(userId), // Only show employees for this user
+    };
 
     // Add search filter (case-insensitive regex search)
     if (search) {
@@ -74,6 +102,30 @@ export async function POST(request: NextRequest) {
     // Connect to MongoDB
     await connectDB();
 
+    // Get user from token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      const response: ApiResponse = {
+        success: false,
+        error: 'Unauthorized',
+      };
+      return NextResponse.json(response, { status: 401 });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    } catch (error) {
+      const response: ApiResponse = {
+        success: false,
+        error: 'Invalid token',
+      };
+      return NextResponse.json(response, { status: 401 });
+    }
+
+    const userId = decoded.userId;
+
     // Parse request body
     const body: IEmployee = await request.json();
     const { name, email, position } = body;
@@ -109,6 +161,7 @@ export async function POST(request: NextRequest) {
 
     // Create new employee
     const employee = await Employee.create({
+      userId: new mongoose.Types.ObjectId(userId),
       name: name.trim(),
       email: email.trim().toLowerCase(),
       position: position.trim(),
