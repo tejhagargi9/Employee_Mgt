@@ -77,7 +77,7 @@ export default function UpdatePasswordForm() {
       } else {
         setError(result.error || 'Failed to update password');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);

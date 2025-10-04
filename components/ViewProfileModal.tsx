@@ -35,7 +35,7 @@ export default function ViewProfileModal({ isOpen, employee, onClose }: ViewProf
         <DialogHeader>
           <DialogTitle className="text-black dark:text-white flex items-center gap-2">
             <User className="h-5 w-5" />
-            {employee.name}'s Profile
+            {employee.name}&apos;s Profile
           </DialogTitle>
           <DialogDescription className="text-gray-600 dark:text-gray-400">
             Complete employee information and details.

@@ -62,7 +62,7 @@ export default function LoginForm() {
       } else {
         setError(result.error || 'Login failed');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);

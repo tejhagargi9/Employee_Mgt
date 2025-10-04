@@ -21,10 +21,10 @@ export async function GET(request: NextRequest) {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    let decoded: any;
+    let decoded: jwt.JwtPayload;
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    } catch (error) {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as jwt.JwtPayload;
+    } catch (_error) {
       const response: ApiResponse = {
         success: false,
         error: 'Invalid token',
@@ -113,10 +113,10 @@ export async function POST(request: NextRequest) {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    let decoded: any;
+    let decoded: jwt.JwtPayload;
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    } catch (error) {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as jwt.JwtPayload;
+    } catch (_error) {
       const response: ApiResponse = {
         success: false,
         error: 'Invalid token',

@@ -51,7 +51,7 @@ export default function SignupForm() {
       } else {
         setError(result.error || 'Signup failed');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);

@@ -131,55 +131,64 @@ export default function UpdateEmployeeModal({ isOpen, employee, onClose, onSucce
     setErrors({});
 
     try {
-      let updateData: Partial<IEmployee> = {};
-
-      switch (activeTab) {
-        case 'personal':
-          updateData.personalInfo = {
-            dateOfBirth: formData.personalInfo.dateOfBirth || undefined,
-            gender: formData.personalInfo.gender || undefined,
-            nationality: formData.personalInfo.nationality || undefined,
-          };
-          break;
-        case 'contacts':
-          // Validate phone numbers
-          const phoneRegex = /^\+?[\d\s\-\(\)]+$/;
-          if (formData.contacts.phone && !phoneRegex.test(formData.contacts.phone)) {
-            setErrors({ phone: 'Please enter a valid phone number' });
-            setLoading(false);
-            return;
-          }
-          if (formData.contacts.emergencyContact.phone && !phoneRegex.test(formData.contacts.emergencyContact.phone)) {
-            setErrors({ emergencyPhone: 'Please enter a valid emergency contact phone number' });
-            setLoading(false);
-            return;
-          }
-          updateData.contacts = {
-            phone: formData.contacts.phone || undefined,
-            emergencyContact: {
-              name: formData.contacts.emergencyContact.name || undefined,
-              phone: formData.contacts.emergencyContact.phone || undefined,
-              relationship: formData.contacts.emergencyContact.relationship || undefined,
-            },
-          };
-          break;
-        case 'salary':
-          updateData.salary = {
-            amount: formData.salary.amount ? parseFloat(formData.salary.amount) : undefined,
-            currency: formData.salary.currency,
-            frequency: formData.salary.frequency as 'monthly' | 'yearly' | 'hourly',
-          };
-          break;
-        case 'address':
-          updateData.address = {
-            street: formData.address.street || undefined,
-            city: formData.address.city || undefined,
-            state: formData.address.state || undefined,
-            zipCode: formData.address.zipCode || undefined,
-            country: formData.address.country || undefined,
-          };
-          break;
+      // Validate phone numbers for contacts tab
+      if (activeTab === 'contacts') {
+        const phoneRegex = /^\+?[\d\s\-\(\)]+$/;
+        if (formData.contacts.phone && !phoneRegex.test(formData.contacts.phone)) {
+          setErrors({ phone: 'Please enter a valid phone number' });
+          setLoading(false);
+          return;
+        }
+        if (formData.contacts.emergencyContact.phone && !phoneRegex.test(formData.contacts.emergencyContact.phone)) {
+          setErrors({ emergencyPhone: 'Please enter a valid emergency contact phone number' });
+          setLoading(false);
+          return;
+        }
       }
+
+      const updateData: Partial<IEmployee> = (() => {
+        switch (activeTab) {
+          case 'personal':
+            return {
+              personalInfo: {
+                dateOfBirth: formData.personalInfo.dateOfBirth || undefined,
+                gender: formData.personalInfo.gender || undefined,
+                nationality: formData.personalInfo.nationality || undefined,
+              },
+            };
+          case 'contacts':
+            return {
+              contacts: {
+                phone: formData.contacts.phone || undefined,
+                emergencyContact: {
+                  name: formData.contacts.emergencyContact.name || undefined,
+                  phone: formData.contacts.emergencyContact.phone || undefined,
+                  relationship: formData.contacts.emergencyContact.relationship || undefined,
+                },
+              },
+            };
+          case 'salary':
+            return {
+              salary: {
+                amount: formData.salary.amount ? parseFloat(formData.salary.amount) : undefined,
+                currency: formData.salary.currency,
+                frequency: formData.salary.frequency as 'monthly' | 'yearly' | 'hourly',
+              },
+            };
+          case 'address':
+            return {
+              address: {
+                street: formData.address.street || undefined,
+                city: formData.address.city || undefined,
+                state: formData.address.state || undefined,
+                zipCode: formData.address.zipCode || undefined,
+                country: formData.address.country || undefined,
+              },
+            };
+          default:
+            return {};
+        }
+      })();
 
       const token = localStorage.getItem('token');
       const response = await fetch(`/api/employees/${employee._id}`, {
@@ -212,7 +221,7 @@ export default function UpdateEmployeeModal({ isOpen, employee, onClose, onSucce
         <DialogHeader>
           <DialogTitle className="text-black dark:text-white">Update Employee Details</DialogTitle>
           <DialogDescription className="text-gray-600 dark:text-gray-400">
-            Update {employee?.name}'s information across different categories.
+            Update {employee?.name}&apos;s information across different categories.
           </DialogDescription>
         </DialogHeader>
 
