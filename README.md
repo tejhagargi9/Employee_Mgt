@@ -28,7 +28,7 @@ A full-stack employee management application built with Next.js.
 
 1. Navigate to the project directory:
    ```
-   cd my-app
+   cd Employee_Mgt
    ```
 
 2. Install dependencies:
